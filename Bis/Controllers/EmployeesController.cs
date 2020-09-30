@@ -45,6 +45,7 @@ namespace Bis.Controllers
             ViewBag.categoryId = new SelectList(db.Categories, "id", "name");
             ViewBag.departmentId = new SelectList(db.Departments, "id", "name");
             ViewBag.subCategoryId = new SelectList(db.SubCategories, "id", "name");
+            ViewBag.companyId = new SelectList(db.Companies, "id", "companyName");
             return View();
         }
 
@@ -53,7 +54,7 @@ namespace Bis.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "id,employeeId,categoryId,subCategoryId,departmentId,name,fatherNmae,age,gender,dob,maritalStatus,email,phoneNumber,adharNumber,bloodGroup,address,communicationAddress,designation,doj,bankName,branchName,holderName,accountNo,ifscCode,panNo,institutionName,degree,yearofCompletion,university,percentage,ndeQualificationType,expiryDate,industryName,salary,periodFrom,periodTo,reason,salaryType,bisSalary,uniformIssueDate,shoeIssueDate,status,grade,esi,pf,insuranceCategory,photo,createUser")] Employee employee, HttpPostedFileBase photo,string employeeId)
+        public ActionResult Create([Bind(Include = "id,employeeId,categoryId,subCategoryId,departmentId,companyId,name,fatherNmae,age,gender,dob,maritalStatus,email,phoneNumber,adharNumber,bloodGroup,address,communicationAddress,designation,doj,bankName,branchName,holderName,accountNo,ifscCode,panNo,institutionName,degree,yearofCompletion,university,percentage,ndeQualificationType,expiryDate,industryName,salary,periodFrom,periodTo,reason,salaryType,bisSalary,uniformIssueDate,shoeIssueDate,status,grade,esi,pf,insuranceCategory,photo,createUser")] Employee employee, HttpPostedFileBase photo,string employeeId)
         {
            
             if (ModelState.IsValid)
@@ -82,6 +83,7 @@ namespace Bis.Controllers
             ViewBag.categoryId = new SelectList(db.Categories, "id", "name", employee.categoryId);
             ViewBag.departmentId = new SelectList(db.Departments, "id", "name", employee.departmentId);
             ViewBag.subCategoryId = new SelectList(db.SubCategories, "id", "name", employee.subCategoryId);
+            ViewBag.companyId = new SelectList(db.Companies, "id", "companyName",employee.companyId);
             return View(employee);
         }
 
@@ -143,6 +145,7 @@ namespace Bis.Controllers
             ViewBag.categoryId = new SelectList(db.Categories, "id", "name", employee.categoryId);
             ViewBag.departmentId = new SelectList(db.Departments, "id", "name", employee.departmentId);
             ViewBag.subCategoryId = new SelectList(db.SubCategories, "id", "name", employee.subCategoryId);
+            ViewBag.companyId = new SelectList(db.Companies, "id", "companyName", employee.companyId);
             return View(employee);
         }
 
@@ -151,7 +154,7 @@ namespace Bis.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "id,employeeId,categoryId,subCategoryId,departmentId,name,fatherNmae,age,gender,dob,maritalStatus,email,phoneNumber,adharNumber,bloodGroup,address,communicationAddress,designation,doj,bankName,branchName,holderName,accountNo,ifscCode,panNo,institutionName,degree,yearofCompletion,university,percentage,ndeQualificationType,expiryDate,industryName,salary,periodFrom,periodTo,reason,salaryType,bisSalary,uniformIssueDate,shoeIssueDate,status,grade,esi,pf,insuranceCategory,createUser")] Employee employee, HttpPostedFileBase photo)
+        public ActionResult Edit([Bind(Include = "id,employeeId,categoryId,subCategoryId,departmentId,companyId,name,fatherNmae,age,gender,dob,maritalStatus,email,phoneNumber,adharNumber,bloodGroup,address,communicationAddress,designation,doj,bankName,branchName,holderName,accountNo,ifscCode,panNo,institutionName,degree,yearofCompletion,university,percentage,ndeQualificationType,expiryDate,industryName,salary,periodFrom,periodTo,reason,salaryType,bisSalary,uniformIssueDate,shoeIssueDate,status,grade,esi,pf,insuranceCategory,createUser")] Employee employee, HttpPostedFileBase photo)
         {
             if (ModelState.IsValid)
             {
@@ -169,6 +172,7 @@ namespace Bis.Controllers
             ViewBag.categoryId = new SelectList(db.Categories, "id", "name", employee.categoryId);
             ViewBag.departmentId = new SelectList(db.Departments, "id", "name", employee.departmentId);
             ViewBag.subCategoryId = new SelectList(db.SubCategories, "id", "name", employee.subCategoryId);
+            ViewBag.companyId = new SelectList(db.Companies, "id", "companyName", employee.companyId);
             return View(employee);
         }
 

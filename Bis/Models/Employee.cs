@@ -34,6 +34,8 @@ namespace Bis.Models
 
         public int? departmentId { get; set; }
         public virtual Department Department { get; set; }
+        public int? companyId { get; set; }
+        public virtual Company Company { get; set; }
 
         [Required]
         [StringLength(50)]

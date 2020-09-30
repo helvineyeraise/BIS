@@ -360,12 +360,44 @@ namespace Bis.Controllers
             SqlCommand objCommand = new SqlCommand();
             QueryBuilder objBuilder = new QueryBuilder();
             objCommand = empID.Equals(0) ? objHelper.GetSqlQueryCommand(objBuilder.BuildQuery("DailyAttendanceReport")) : 
-                objHelper.GetSqlQueryCommand(objBuilder.BuildQuery("DailyAttendanceReportByEmp"));
+            objHelper.GetSqlQueryCommand(objBuilder.BuildQuery("DailyAttendanceReportByEmp"));
             objHelper.AddInParameter(objCommand, "ID", SqlDbType.Int, category);
             objHelper.AddInParameter(objCommand, "DATEFROM", SqlDbType.NVarChar, fromDate);
             objHelper.AddInParameter(objCommand, "DATETO", SqlDbType.NVarChar, toDate);
             objHelper.AddInParameter(objCommand, "EMPLOYEEID", SqlDbType.NVarChar, empID);
             DataTable dtResult = objHelper.LoadDataTable(objCommand, "DailyAttendanceReport");
+            return Json(DataTableToJSON(dtResult), JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult Annexure()
+        {
+            var lstcategory = db.Categories.ToList();
+            ViewBag.category = lstcategory;
+            var lstcompany = db.Companies.ToList();
+            ViewBag.company = lstcompany;
+           
+            return View();
+        }
+        [HttpPost]
+        public JsonResult AnnexureReport(int? category, string fromDate, string toDate, int? cmpID)
+        {
+            SQLHelper.SQLHelper objHelper = new SQLHelper.SQLHelper();
+            SqlCommand objCommand = new SqlCommand();
+            QueryBuilder objBuilder = new QueryBuilder();
+            if (category!=null)
+            {
+                objCommand = objHelper.GetSqlQueryCommand(objBuilder.BuildQuery("AnnexureReportByCategory"));
+                objHelper.AddInParameter(objCommand, "ID", SqlDbType.Int, category);
+                objHelper.AddInParameter(objCommand, "DATEFROM", SqlDbType.NVarChar, fromDate);
+                objHelper.AddInParameter(objCommand, "DATETO", SqlDbType.NVarChar, toDate);
+            }
+            else
+            {
+                objCommand = objHelper.GetSqlQueryCommand(objBuilder.BuildQuery("AnnexureReportByCompany"));
+                objHelper.AddInParameter(objCommand, "COMPANYID", SqlDbType.NVarChar, cmpID);
+                objHelper.AddInParameter(objCommand, "DATEFROM", SqlDbType.NVarChar, fromDate);
+                objHelper.AddInParameter(objCommand, "DATETO", SqlDbType.NVarChar, toDate);
+            }
+            DataTable dtResult = objHelper.LoadDataTable(objCommand, "AnnexureReport");
             return Json(DataTableToJSON(dtResult), JsonRequestBehavior.AllowGet);
         }
         public ActionResult IdCard()

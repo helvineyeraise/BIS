@@ -322,6 +322,10 @@
     <Compile Include="Migrations\202007281048484_m4.designer.cs">
       <DependentUpon>202007281048484_m4.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202009301141180_m5.cs" />
+    <Compile Include="Migrations\202009301141180_m5.designer.cs">
+      <DependentUpon>202009301141180_m5.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Advance.cs" />
     <Compile Include="Models\Attendance.cs" />
@@ -3349,6 +3353,7 @@
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Reports\DailyAttendance.cshtml" />
+    <Content Include="Views\Reports\Annexure.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -3371,6 +3376,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202007281048484_m4.resx">
       <DependentUpon>202007281048484_m4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009301141180_m5.resx">
+      <DependentUpon>202009301141180_m5.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

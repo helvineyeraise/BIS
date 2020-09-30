@@ -1,0 +1,184 @@
+﻿
+@{
+    ViewBag.Title = "Annexure";
+}
+<script src="~/assets/js/FileSaver.js"></script>
+<script src="~/assets/js/xlsx.full.min.js"></script>
+<div class="row">
+    <div class="col-md-2">
+        <div class="form-group">
+            <label class="d-block" id="lblctg">Employee Category</label>
+            <select name="empCategory" id="empCategory" class="form-control col-xl-10" required>
+                <option value="">-Select Category-</option>
+                @foreach (var item in ViewBag.category)
+                {
+                    <option value="@item.id">@item.name </option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="col-md-2">
+        @*<div class="form-group">
+                <label class="d-block" id="lblcpm">Company</label>
+                @Html.DropDownList("companyId", null, htmlAttributes: new { @class = "form-control col-xl-10" })
+            </div>*@
+        <div class="form-group">
+            <label class="d-block" id="lblctg">Company</label>
+            <select name="company" id="company" class="form-control col-xl-10" required>
+                <option value="">-Select Company-</option>
+                @foreach (var item in ViewBag.company)
+                {
+                    <option value="@item.id">@item.companyName </option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <label>From Date</label>
+            <div class="input-group">
+                <span class="input-group-prepend">
+                    <span class="input-group-text"><i class="icon-calendar22" id="fromicon"></i></span>
+                </span>
+                <input type="text" class="form-control daterange-single-date" id="fromdate">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <label>To Date</label>
+            <div class="input-group">
+                <span class="input-group-prepend">
+                    <span class="input-group-text"><i class="icon-calendar22" id="toicon"></i></span>
+                </span>
+                <input type="text" class="form-control daterange-single-date" id="todate">
+            </div>
+        </div>
+    </div>
+    <div>
+        <button type="button" class="dropdown-item" id="btnSearch" style="background-color:white;margin-top: 27px;margin-left: 11px;background-color: #eee;"><i class="icon-search4"></i> Search</button>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header header-elements-inline">
+        <h5 class="card-title">Annexure</h5>
+        <div class="header-elements">
+            <div class="list-icons">
+                <button type="button" class="dropdown-item" id="btnxlsx"><i class="icon-file-excel"></i> .xlsx</button>
+                <button type="button" class="dropdown-item" id="btnprint"><i class="icon-printer"></i> Print</button>
+            </div>
+        </div>
+    </div>
+    <table class="table datatable-basic table-bordered table-striped table-hover" id="dailyAttd">
+        <thead>
+            <tr>
+                <th>Employee ID</th>
+                <th>Employee Name</th>
+                <th>Category</th>
+                <th>Company</th>
+                <th>Days</th>
+                <th>Charges</th>
+                <th>Company Claim Charges</th>
+            </tr>
+        </thead>
+        <tbody id="tbldailyAttd">
+        </tbody>
+    </table>
+</div>
+<script>
+    $(function () {
+        $("#empCategory").select2();
+        $("#company").select2();
+        $("#btnSearch").click(function () {
+            var formatDate = $('#fromdate').val().split('/');
+            var fromDate = formatDate[2] + "-" + formatDate[1] + "-" + formatDate[0];
+            var formatToDate = $('#todate').val().split('/');
+            var toDate = formatToDate[2] + "-" + formatToDate[1] + "-" + formatToDate[0];
+            var c = document.getElementById("empCategory");
+            var category = c.options[c.selectedIndex].value;
+            var e = document.getElementById("company");
+            var cmpId = e.options[e.selectedIndex].value;
+            Connsolidate(fromDate, toDate, category, cmpId);
+        });
+        $("#btnprint").click(function () {
+            printData();
+        });
+        $('#btnxlsx').click(function () {
+            exportToExcel();
+        });
+
+    });
+    function Connsolidate(fromDate, toDate, category, cmpId) {
+         debugger
+        $("#tbldailyAttd").empty();
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Content("~/Reports/AnnexureReport")',
+            dataType: 'json',
+            data: { category: category, fromDate: fromDate, toDate: toDate, cmpID: cmpId},
+            success: function (result) {
+                var data = JSON.parse(result);
+                var row;
+                for (var i = 0; i < data.length; i++) {
+                    row = '<tr>';
+                    row += '<td>' + data[i].employeeId + '</td>';
+                    row += '<td>' + data[i].Employee + '</td>';
+                    row += '<td>' + data[i].Category + '</td>';
+                    row += '<td>' + data[i].Company + '</td>';
+                    row += '<td>' + data[i].Days + '</td>';
+                    row += '<td>' + data[i].Companyclaimcharge + '</td>';
+                    row += '<td>' + data[i].Charges + '</td>';
+                    row += '</tr>';
+                    $("#tbldailyAttd").append(row);
+                }
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
+    }
+    function printData()
+    {
+        var divToPrint = document.getElementById('dailyAttd');
+        var htmlToPrint = '' +
+        '<style type="text/css">' +
+        'table, th, td {' +
+        'border:1px solid #000;' +
+        ' border-collapse: collapse;'+
+        'padding:15px;' +
+        '}' +
+        '</style>';
+        htmlToPrint += divToPrint.outerHTML;
+        newWin = window.open("");
+        newWin.document.write(htmlToPrint);
+        newWin.print();
+        newWin.close();
+    }
+    function exportToExcel() {
+        var wscols = [
+            { wch: 10 },
+            { wch: 20 },
+            { wch: 15 },
+            { wch: 15 },
+            { wch: 15 },
+        ];
+        var wb = XLSX.utils.table_to_book(document.getElementById("dailyAttd"), {
+            sheet: "Annexure",
+            raw: true,
+        });
+        wb.Sheets["Annexure"]["!cols"] = wscols;
+        var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
+        saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), "Annexure.xlsx");
+    }
+    function s2ab(s) {
+        var buf = new ArrayBuffer(s.length);
+        var view = new Uint8Array(buf);
+        for (var i = 0; i < s.length; i++) {
+            view[i] = s.charCodeAt(i) & 0xFF;
+        }
+        return buf;
+    }
+</script>
+
+

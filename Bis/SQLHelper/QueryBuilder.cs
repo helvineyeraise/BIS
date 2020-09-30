@@ -240,6 +240,43 @@ namespace Bis.SQLHelper
                                 + "WHERE DATE BETWEEN @DATEFROM AND @DATETO AND e.categoryid = @ID and e.id = @EMPLOYEEID" + " "
                                 +"ORDER BY DATE,e.name;";
                     break;
+
+                case "AnnexureReportByCategory":
+                    query = "SELECT T1.employeeId,T1.Employee,T1.Category,T1.companyName as 'Company',T2.Days,T1.Companyclaimcharge,"
+                           + " (T2.DAYS * T1.companyclaimcharge) as 'Charges' FROM"
+                             + " (SELECT emp.employeeId, emp.name as 'Employee', c.name as 'Category', com.companyName, ch.companyclaimcharge"
+                             + " FROM EMPLOYEE emp"
+                             + " INNER JOIN CATEGORY c on c.id = emp.categoryid"
+                             + " LEFT JOIN COMPANY com on com.id = emp.companyId"
+                             + " LEFT JOIN CHARGES ch on ch.companyId = emp.companyId"
+                             + " WHERE emp.categoryId = @ID"
+                             + " ) AS T1"
+                           + " INNER JOIN"
+                           + " (SELECT emp.employeeId, count(atd.employeeId) as 'Days'"
+                           + " FROM EMPLOYEE emp"
+                           + " INNER JOIN ATTENDANCE atd ON atd.employeeId = emp.id"
+                           + " WHERE atd.STATUS = 'Present' AND DATE BETWEEN @DATEFROM AND @DATETO"
+                           + " GROUP BY emp.employeeId ) AS T2 ON T1.employeeId = T2.employeeId"
+                           + " ORDER BY T1.Category,T1.Employee; ";
+                    break;
+                case "AnnexureReportByCompany":
+                    query = "SELECT T1.employeeId,T1.Employee,T1.Category,T1.companyName as 'Company',T2.Days,T1.Companyclaimcharge,"
+                            + " (T2.DAYS * T1.companyclaimcharge) as 'Charges' FROM"
+                             + " (SELECT emp.employeeId, emp.name as 'Employee', c.name as 'Category', com.companyName, ch.companyclaimcharge"
+                             + " FROM EMPLOYEE emp"
+                             + " INNER JOIN CATEGORY c on c.id = emp.categoryid"
+                             + " LEFT JOIN COMPANY com on com.id = emp.companyId"
+                             + " LEFT JOIN CHARGES ch on ch.companyId = emp.companyId"
+                             + " WHERE emp.companyId = @COMPANYID"
+                             + " ) AS T1"
+                           + " INNER JOIN"
+                            + " (SELECT emp.employeeId, count(atd.employeeId) as 'Days'"
+                            + " FROM EMPLOYEE emp"
+                            + " INNER JOIN ATTENDANCE atd ON atd.employeeId = emp.id"
+                           + " WHERE atd.STATUS = 'Present' AND DATE BETWEEN @DATEFROM AND @DATETO"
+                           + " GROUP BY emp.employeeId ) AS T2 ON T1.employeeId = T2.employeeId"
+                           + " ORDER BY T1.Category,T1.Employee; ";
+                    break;
             }
             return query;
         }
